@@ -16,6 +16,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # プロジェクトフォルダまでのパス
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
 
 env = environ.Env()
 root = environ.Path(BASE_DIR / 'secrets')
@@ -49,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 追記
-    'base',
+    'base.apps.BaseConfig',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +69,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # templatesを使用することを伝える
-        'DIRS': [ BASE_DIR / 'templetes'],
+        'DIRS': [ BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
