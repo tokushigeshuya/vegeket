@@ -20,6 +20,7 @@ from base import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # トップページ
+    # item
+    path('items/<str:pk>/', views.ItemDetailView.as_view()),    # トップページ
     path('', views.IndexListView.as_view()),
 ]
