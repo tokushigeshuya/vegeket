@@ -22,7 +22,7 @@ urlpatterns = [
 
     # Cart
     path('cart/', views.CartListView.as_view()),
-    
+    path('cart/add/', views.AddCartView.as_view()),
     # item
     path('items/<str:pk>/', views.ItemDetailView.as_view()),    # トップページ
     path('', views.IndexListView.as_view()),
