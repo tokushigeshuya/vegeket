@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic import View, ListView
@@ -8,6 +10,32 @@ from collections import OrderedDict
 class CartListView(ListView):
     model = Item
     template_name = 'pages/cart.html'
+    # ListViewが持っているメソッド（上書きする※オーバーライド）
+    def get_queryset(self):
+        # cartのキー情報のチェック
+        cart = self.request.session.get('cart',None)
+        if cart is None or len(cart) == 0:
+            # cartにitemがない場合はトップページへ
+            return redirect('/')
+        self.queryset = []
+        self.total = 0
+        # item_pkにはキー、quantityにはvalue
+        for item_pk, quantity in cart['items'].items():
+            obj = Item.objects.get(pk=item_pk)
+            # quantityとsubtotalは画面に表示するために一時的に表示（データベース内には入らない）
+            obj.quantity = quantity
+            # itemの価格*量
+            obj.subtotal = int(obj.price * quantity)
+            self.queryset.append(obj)
+            self.total += obj.subtotal
+        # 合計金額（消費税*1.1）
+        self.tax_included_total = int(self.total * (settings.TAX_RATE + 1))
+        # cartの中にtotalを構築
+        cart['total'] = self.total
+        cart['tax_included_total'] = self.tax_included_total
+        self.request.session['cart'] = cart
+        return super().get_queryset()
+        
 
 class AddCartView(View):
     # postされた時に処理
